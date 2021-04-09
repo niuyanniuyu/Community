@@ -3,6 +3,9 @@ package com.community.controller;
 import com.community.entity.User;
 import com.community.service.UserService;
 import com.community.util.CommunityConstant;
+import com.google.code.kaptcha.Producer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,13 +13,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
 
 
 @Controller
 public class LoginController implements CommunityConstant {
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private Producer KaptchaProducer;
 
     // 跳转到注册页面
     @RequestMapping(path = "/register", method = RequestMethod.GET)
@@ -54,10 +68,10 @@ public class LoginController implements CommunityConstant {
         } else if (result == ACTIVATION_REPEAT) {
             model.addAttribute("msg", "您的账号已经激活，请勿多次激活！");
             model.addAttribute("target", "/index");
-        } else if (result==ACTIVATION_FAIL){
+        } else if (result == ACTIVATION_FAIL) {
             model.addAttribute("msg", "激活失败，您提供的激活码不正确！");
             model.addAttribute("target", "/index");
-        }else {
+        } else {
             model.addAttribute("msg", "激活失败，您的账号不存在！");
             model.addAttribute("target", "/index");
         }
@@ -71,4 +85,23 @@ public class LoginController implements CommunityConstant {
     }
 
 
+    @RequestMapping(path = "/kaptcha", method = RequestMethod.GET)
+    public void getKaptcha(HttpServletResponse httpServletResponse, HttpSession httpSession) {
+        // 生成随机字符串
+        String text = KaptchaProducer.createText();
+        // 根据字符串生成图片
+        BufferedImage bufferedImage = KaptchaProducer.createImage(text);
+
+        // 将验证码存入Session
+        httpSession.setAttribute("kaptcha", text);
+        // 将图片输出给浏览器
+        httpServletResponse.setContentType("image/png");
+        try {
+            OutputStream os = httpServletResponse.getOutputStream();
+            ImageIO.write(bufferedImage, "png", os);
+        } catch (IOException e) {
+            logger.error("响应验证码失败：" + e.getMessage());
+        }
+ 
+    }
 }
