@@ -163,15 +163,19 @@ public class UserService implements CommunityConstant {
     }
 
     // 用户登出
-    public void logout(String ticket){
-        loginTicketMapper.updateStatus(ticket,1);
+    public void logout(String ticket) {
+        loginTicketMapper.updateStatus(ticket, 1);
     }
 
     // 查询ticket
-    public LoginTicket findTicket(String ticket){
+    public LoginTicket findTicket(String ticket) {
         return loginTicketMapper.selectByTicket(ticket);
 
+    }
 
+    // 更新用户头像路径
+    public int updateHeader(int userId, String headerUrl) {
+        return userMapper.updateHeader(userId, headerUrl);
     }
 
 }
