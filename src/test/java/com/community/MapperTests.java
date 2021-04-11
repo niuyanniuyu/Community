@@ -1,8 +1,10 @@
 package com.community;
 
 import com.community.dao.DiscussPostMapper;
+import com.community.dao.LoginTicketMapper;
 import com.community.dao.UserMapper;
 import com.community.entity.DiscussPost;
+import com.community.entity.LoginTicket;
 import com.community.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +26,9 @@ public class MapperTests {
 
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     @Test
     public void testSelectUser() {
@@ -53,8 +58,9 @@ public class MapperTests {
         System.out.println(user.getId());
     }
 
+    // 测试用户更新
     @Test
-    public void updateUser() {
+    public void testUpdateUser() {
         int rows = userMapper.updateStatus(150, 1);
         System.out.println(rows);
 
@@ -65,6 +71,7 @@ public class MapperTests {
         System.out.println(rows);
     }
 
+    // 测试能否得到所有帖子，和某个userId的帖子
     @Test
     public void testSelectPosts() {
         List<DiscussPost> list = discussPostMapper.selectDiscussPosts(149, 0, 10);
@@ -74,10 +81,35 @@ public class MapperTests {
 
     }
 
+    // 测试能否得到所有帖子行数
     @Test
     public void testSelectDiscussPostRows() {
         int rows = discussPostMapper.selectDiscussPostRows(149);
         System.out.println(rows);
+
+    }
+
+    // 测试添加用户登录凭证
+    @Test
+    public void testInsertLoginTicket() {
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(101);
+        loginTicket.setTicket("abc");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+
+        loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+
+    // 测试查找并跟更新用户登录凭证状态
+    @Test
+    public void testSelectLoginTicket(){
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+
+        loginTicketMapper.updateStatus("abc",1);
+        loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
 
     }
 }

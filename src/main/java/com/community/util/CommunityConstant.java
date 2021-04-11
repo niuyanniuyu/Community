@@ -12,6 +12,12 @@ public interface CommunityConstant {
     int ACTIVATION_FAIL = 2;
 
     // 用户不存在，激活失败
-    int ACTIVATION_ERROR= 3;
+    int ACTIVATION_ERROR = 3;
+
+    // 默认状态的登录凭证超时时间
+    int DEFAULT_EXPIRED_SECOND = 3600 * 12;
+
+    // 记住我状态的登录凭证超时时间
+    int REMEMBER_EXPIRED_SECOND = 3600 * 24 * 100;
 
 }

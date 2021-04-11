@@ -29,6 +29,8 @@ public class AlphaService {
         System.out.println("销毁AlphaService");
     }
 
+    // propagation用于设置事务的传播行为，业务方法需要在一个事务中运行,如果方法运行时,已处在一个事务中,那么就加入该事务,否则自己创建一个新的事务.这是spring默认的传播行为
+    // @Transactional(propagation= Propagation.REQUIRED,isolation = Isolation.DEFAULT,rollbackFor=Exception.class)
     public String find() {
         return alphaDao.select();
     }
