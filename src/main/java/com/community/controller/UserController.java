@@ -116,7 +116,7 @@ public class UserController {
     }
 
     @RequestMapping(path = "/updatePassword", method = RequestMethod.POST)
-    public String activation(Model model, String password,String newPassword) {
+    public String activation(Model model, String password, String newPassword) {
         // 参数验证
         User user = hostHolder.getUser();
         if (user == null) {
@@ -131,15 +131,22 @@ public class UserController {
             model.addAttribute("newPasswordMsg", "请输入新密码！");
             return "/site/setting";
         }
+        // 判断新旧密码是否相同
+        if (newPassword.equals(password)){
+            model.addAttribute("newPasswordMsg", "新密码与原密码相同！");
+            model.addAttribute("msg", "密码更改失败！");
+            return "/site/setting";
+        }
 
         // 验证旧密码
-        if (!userService.identifyPassword(user,password)){
+        if (!userService.identifyPassword(user, password)) {
             model.addAttribute("passwordMsg", "原密码不正确！");
+            model.addAttribute("msg", "密码更改失败！");
             return "/site/setting";
         }
 
         // 更改新密码
-        int result = userService.updatePassword(user,newPassword);
+        int result = userService.updatePassword(user, newPassword);
         if (result != 0) {
             model.addAttribute("msg", "密码更改成功！");
             return "redirect:/index";
