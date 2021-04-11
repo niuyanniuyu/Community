@@ -44,6 +44,7 @@ public class UserService implements CommunityConstant {
         return userMapper.selectById(id);
     }
 
+    // 用户登录
     public Map<String, Object> register(User user) {
         Map<String, Object> map = new HashMap<>();
 
@@ -174,8 +175,20 @@ public class UserService implements CommunityConstant {
     }
 
     // 更新用户头像路径
-    public int updateHeader(int userId, String headerUrl) {
-        return userMapper.updateHeader(userId, headerUrl);
+    public void updateHeader(int userId, String headerUrl) {
+        userMapper.updateHeader(userId, headerUrl);
+    }
+
+    // 验证密码
+    public Boolean identifyPassword(User user, String password) {
+        password = CommunityUtil.md5(password + user.getSalt());
+        return user.getPassword().equals(password);
+    }
+
+    // 更新用户密码
+    public int updatePassword(User user,String newPassword) {
+        return userMapper.updatePassword(user.getId(), CommunityUtil.md5(newPassword + user.getSalt()));
+
     }
 
 }

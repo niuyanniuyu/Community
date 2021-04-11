@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -45,9 +44,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         User user = hostHolder.getUser();
-        System.out.println("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
         if (user != null && modelAndView != null) {
-            System.out.println("hhhhhhhhhhhhhhhhahaahhaaaaaaaaaaaaaaaa");
             modelAndView.addObject("loginUser", user);
         }
     }

@@ -90,7 +90,7 @@
                                id="password" name="password"
                                th:value="${param.password}" placeholder="请输入您的密码!"
                                required>
-                        <div class="invalid-feedback">
+                        <div class="invalid-feedback" th:text="${passwordMsg}">
                             密码长度不能小于8位!
                         </div>
                     </div>

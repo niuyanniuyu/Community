@@ -1,5 +1,6 @@
 package com.community.controller;
 
+import com.community.annotation.LoginRequired;
 import com.community.entity.User;
 import com.community.service.UserService;
 import com.community.util.CommunityUtil;
@@ -21,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.http.HttpResponse;
 
 @Controller
 @RequestMapping("/user")
@@ -45,12 +45,14 @@ public class UserController {
     private HostHolder hostHolder;
 
     // 跳转设置页面
+    @LoginRequired // 自定义注解，需要登录后访问
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage() {
         return "/site/setting";
     }
 
     // 处理上传文件
+    @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
         if (headerImage == null) {
@@ -111,9 +113,42 @@ public class UserController {
         } catch (IOException e) {
             logger.error("读取头像失败：" + e.getMessage());
         }
+    }
+
+    @RequestMapping(path = "/updatePassword", method = RequestMethod.POST)
+    public String activation(Model model, String password,String newPassword) {
+        // 参数验证
+        User user = hostHolder.getUser();
+        if (user == null) {
+            model.addAttribute("msg", "请登录！");
+            return "redirect:/index";
+        }
+        if (StringUtils.isBlank(password)) {
+            model.addAttribute("passwordMsg", "请输入原密码！");
+            return "/site/setting";
+        }
+        if (StringUtils.isBlank(newPassword)) {
+            model.addAttribute("newPasswordMsg", "请输入新密码！");
+            return "/site/setting";
+        }
+
+        // 验证旧密码
+        if (!userService.identifyPassword(user,password)){
+            model.addAttribute("passwordMsg", "原密码不正确！");
+            return "/site/setting";
+        }
+
+        // 更改新密码
+        int result = userService.updatePassword(user,newPassword);
+        if (result != 0) {
+            model.addAttribute("msg", "密码更改成功！");
+            return "redirect:/index";
+        } else {
+            model.addAttribute("msg", "密码更改失败！");
+            return "/site/setting";
+        }
 
 
     }
-
 
 }
