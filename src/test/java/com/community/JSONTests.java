@@ -1,6 +1,6 @@
 package com.community;
 
-import com.community.util.SensitiveFilter;
+import com.community.util.CommunityUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,17 +11,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.HashMap;
 import java.util.Map;
 
+// JSON格式生成测试
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = CommunityApplication.class)
-public class SensitiveTests {
-    @Autowired
-    private SensitiveFilter sensitiveFilter;
+public class JSONTests {
 
     @Test
-    public void testSensitiveFilter() {
-        String text = "这里可以赌博，可以嫖娼，可以开票,不可以吸冰粉";
-        text = sensitiveFilter.filter(text);
-        System.out.println(text);
+    public void TestJSON() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "张三");
+        map.put("age", 24);
+        System.out.println(CommunityUtil.getJSONString(0, "ok", map));
     }
+
 }

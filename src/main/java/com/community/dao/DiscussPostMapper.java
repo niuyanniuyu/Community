@@ -18,8 +18,8 @@ public interface DiscussPostMapper {
     // @Param 给参数取别名 !!! 若SQL需要动态取条件，且此方法只有一个参数，则必须取别名
     int selectDiscussPostRows(@Param("userId") int userId);
 
-//    // 查询帖子发布时间
-//    Date selectCreateTime(int id);
+    // 新建帖子
+    int insertDiscussPost(DiscussPost discussPost);
 
 
 }

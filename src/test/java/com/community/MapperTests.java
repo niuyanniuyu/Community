@@ -112,4 +112,20 @@ public class MapperTests {
         System.out.println(loginTicket);
 
     }
+
+    // 测试插入帖子
+    @Test
+    public void testInsertDiscussPost(){
+        DiscussPost discussPost = new DiscussPost();
+        discussPost.setUserId(156);
+        discussPost.setTitle("西安工业大学");
+        discussPost.setContent("地铁站");
+        discussPost.setType(0);
+        discussPost.setStatus(0);
+        discussPost.setCreateTime(new Date());
+        discussPost.setCommentCount(0);
+        discussPost.setScore(0);
+
+        System.out.println(discussPostMapper.insertDiscussPost(discussPost));
+    }
 }

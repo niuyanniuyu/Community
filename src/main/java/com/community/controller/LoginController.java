@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +48,11 @@ public class LoginController implements CommunityConstant {
 
     // 进行注册
     @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public String register(Model model, User user) {
+    public String register(Model model, User user, String confirmPassword) {
+        if (!user.getPassword().equals(confirmPassword)) {
+            model.addAttribute("passwordMsg", "两次密码不一致！");
+            return "/site/register";
+        }
         Map<String, Object> map = userService.register(user);
         if (map == null || map.isEmpty()) {
             model.addAttribute("msg", "注册成功，我们已经向您的邮箱发送了一封激活邮件！");
@@ -113,12 +118,13 @@ public class LoginController implements CommunityConstant {
     }
 
     // 用户登录
+
     /**
-     *  当输入参数为对象(例User)时，自动加入Model
-     *  但若为基本类型，spring不会装入到Model中
-     *  解决办法1：手动加入Model里
-     *  解决办法2：从Request里获取
-      */
+     * 当输入参数为对象(例User)时，自动加入Model
+     * 但若为基本类型，spring不会装入到Model中
+     * 解决办法1：手动加入Model里
+     * 解决办法2：从Request里获取
+     */
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public String login(String username, String password, String code, boolean rememberMe, Model model, HttpSession httpSession, HttpServletResponse httpServletResponse) {
 
@@ -147,8 +153,8 @@ public class LoginController implements CommunityConstant {
     }
 
     // 用户登出
-    @RequestMapping(path = "/logout",method = RequestMethod.GET)
-    public String logout(@CookieValue("ticket") String ticket){
+    @RequestMapping(path = "/logout", method = RequestMethod.GET)
+    public String logout(@CookieValue("ticket") String ticket) {
         userService.logout(ticket);
         return "redirect:/login";
     }
