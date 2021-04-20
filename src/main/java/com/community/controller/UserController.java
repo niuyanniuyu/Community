@@ -1,5 +1,6 @@
 package com.community.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.community.annotation.LoginRequired;
 import com.community.entity.User;
 import com.community.service.UserService;
@@ -115,6 +116,7 @@ public class UserController {
         }
     }
 
+    // TODO: 2021-04-14 修改密码提示框不显示msg消息 
     @RequestMapping(path = "/updatePassword", method = RequestMethod.POST)
     public String activation(Model model, String password, String newPassword) {
         // 参数验证
