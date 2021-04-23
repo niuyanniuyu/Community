@@ -26,7 +26,7 @@ public class MailClient {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(message);
-            messageHelper.setFrom("1009743898@qq.com");
+            messageHelper.setFrom(from);
             messageHelper.setTo(to);
             messageHelper.setSubject(subject);
             // 默认使用纯文本格式

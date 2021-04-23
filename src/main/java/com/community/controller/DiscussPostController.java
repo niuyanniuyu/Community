@@ -56,7 +56,7 @@ public class DiscussPostController implements CommunityConstant {
 
     }
 
-    // TODO: 2021-04-14 评论功能
+    // TODO: 2021-04-23 回帖，点赞功能
     // 查询帖子详情
     @RequestMapping(path = "/detail/{discussPostId}", method = RequestMethod.GET)
     public String getDiscussPost(@PathVariable("discussPostId") int discussPostId, Model model, Page page) {
