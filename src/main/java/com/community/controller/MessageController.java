@@ -9,6 +9,7 @@ import com.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -50,12 +51,50 @@ public class MessageController {
                 conversations.add(map);
             }
         }
-        model.addAttribute("conversations",conversations);
+        model.addAttribute("conversations", conversations);
 
         // 查询总未读消息数量
         int letterUnreadCount = messageService.findLetterUnreadCount(user.getId(), null);
-        model.addAttribute("letterUnreadCount",letterUnreadCount);
+        model.addAttribute("letterUnreadCount", letterUnreadCount);
 
         return "/site/letter";
     }
+
+    @RequestMapping(path = "/letter/detail/{conversationId}", method = RequestMethod.GET)
+    public String getLetterDetail(@PathVariable("conversationId") String conversationId, Page page, Model model) {
+        // 分页信息
+        page.setLimit(5);
+        page.setPath("/letter/detail/" + conversationId);
+        page.setRows(messageService.findLetterCount(conversationId));
+        // 私信列表
+        List<Message> letterList = messageService.findLetters(conversationId, page.getOffset(), page.getLimit());
+        List<Map<String, Object>> letters = new ArrayList<>();
+        if (letterList != null)
+            for (Message message : letterList) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("letter", message);
+                map.put("fromUser", userService.findUserById(message.getFromId()));
+                letters.add(map);
+            }
+
+        model.addAttribute("letters", letters);
+        // 查询私信目标
+        model.addAttribute("target", getLetterTarget(conversationId));
+
+        return "/site/letter-detail";
+    }
+
+    // 查找与哪个用户正在对话
+    private User getLetterTarget(String conversationId) {
+        String[] id = conversationId.split("_");
+        int id0 = Integer.parseInt(id[0]);
+        int id1 = Integer.parseInt(id[1]);
+
+        if (hostHolder.getUser().getId() == id0)
+            return userService.findUserById(id1);
+        else
+            return userService.findUserById(id0);
+
+    }
+
 }
