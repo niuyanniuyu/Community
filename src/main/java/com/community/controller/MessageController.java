@@ -119,6 +119,7 @@ public class MessageController {
     // @ResponseBody的作用是将java对象转为json格式的数据
     @ResponseBody
     public String sendLetter(String toName, String content) {
+
         User target = userService.findUserByName(toName);
         if (target == null) {
             return CommunityUtil.getJSONString(1, "目标用户不存在");
