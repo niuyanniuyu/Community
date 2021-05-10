@@ -3,7 +3,10 @@ package com.community.controller;
 import com.alibaba.fastjson.JSON;
 import com.community.annotation.LoginRequired;
 import com.community.entity.User;
+import com.community.service.FollowService;
+import com.community.service.LikeService;
 import com.community.service.UserService;
+import com.community.util.CommunityConstant;
 import com.community.util.CommunityUtil;
 import com.community.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +29,7 @@ import java.io.OutputStream;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements CommunityConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -44,6 +47,12 @@ public class UserController {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     // 跳转设置页面
     @LoginRequired // 自定义注解，需要登录后访问
@@ -134,7 +143,7 @@ public class UserController {
             return "/site/setting";
         }
         // 判断新旧密码是否相同
-        if (newPassword.equals(password)){
+        if (newPassword.equals(password)) {
             model.addAttribute("newPasswordMsg", "新密码与原密码相同！");
             model.addAttribute("msg", "密码更改失败！");
             return "/site/setting";
@@ -157,7 +166,33 @@ public class UserController {
             return "/site/setting";
         }
 
+    }
 
+    // 个人主页
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable("userId") int userId, Model model) {
+        User user = userService.findUserById(userId);
+        if (user == null)
+            throw new RuntimeException("该用户不存在!");
+        // 用户
+        model.addAttribute("user", user);
+        // 点赞数量
+        int likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount", likeCount);
+        // 关注数量
+        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount", followeeCount);
+        // 粉丝数量
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followerCount", followerCount);
+        // 是否已关注
+        boolean hasFollowed = false;
+        if (hostHolder.getUser() != null) {
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
+        }
+        model.addAttribute("hasFollowed",hasFollowed);
+
+        return "/site/profile";
     }
 
 }
