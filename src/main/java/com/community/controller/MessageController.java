@@ -59,7 +59,7 @@ public class MessageController {
         return "/site/letter";
     }
 
-    // 进入帖子详情页面
+    // 进入私信详情页面
     @RequestMapping(path = "/letter/detail/{conversationId}", method = RequestMethod.GET)
     public String getLetterDetail(@PathVariable("conversationId") String conversationId, Page page, Model model) {
         // 分页信息
@@ -114,7 +114,7 @@ public class MessageController {
         return ids;
     }
 
-    // 发送帖子
+    // 发送私信
     @RequestMapping(path = "/letter/send", method = RequestMethod.POST)
     // @ResponseBody的作用是将java对象转为json格式的数据
     @ResponseBody
@@ -138,5 +138,33 @@ public class MessageController {
 
         return CommunityUtil.getJSONString(0);
     }
+    // TODO: 2021-05-17 删除私信
+    // 删除某条私信
+    @RequestMapping(path = "/letter/delete/{conversationId}",method = RequestMethod.GET)
+    public String getDeletedLetterDetail(@PathVariable("conversationId") String conversationId, Page page, Model model) {
+        // 分页信息
+        page.setLimit(5);
+        page.setPath("/letter/detail/" + conversationId);
+        page.setRows(messageService.findLetterCount(conversationId));
+        // 私信列表
+        List<Message> letterList = messageService.findLetters(conversationId, page.getOffset(), page.getLimit());
+        List<Map<String, Object>> letters = new ArrayList<>();
+        if (letterList != null)
+            for (Message message : letterList) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("letter", message);
+                map.put("fromUser", userService.findUserById(message.getFromId()));
+                letters.add(map);
+            }
 
+        model.addAttribute("letters", letters);
+        // 查询私信目标
+        model.addAttribute("target", getLetterTarget(conversationId));
+        // 设置已读
+        List<Integer> ids = getLetterIds(letterList);
+        if (!ids.isEmpty())
+            messageService.readMessage(ids);
+
+        return "/site/letter-detail";
+    }
 }

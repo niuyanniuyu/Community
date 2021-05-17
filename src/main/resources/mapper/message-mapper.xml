@@ -81,5 +81,17 @@
         </foreach>
     </update>
 
+    <select id="selectLetterDeletedCount">
+        select count(id) from message
+        where status != 2
+        <if test="to_do="></if>
+        and to_id = #{userId}
+        <if test="conversationId!=null">
+            and conversation_id=#{conversationId}
+        </if>
+
+
+    </select>
+
 
 </mapper>

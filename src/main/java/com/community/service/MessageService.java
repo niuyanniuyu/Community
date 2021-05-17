@@ -56,5 +56,10 @@ public class MessageService {
         return messageMapper.updateStatus(ids, 1);
     }
 
+    // 查询删除私信数量
+    public int findLetterDeletedCount(int userId, String conversationId) {
+        return messageMapper.selectLetterDeletedCount(userId, conversationId);
+    }
+
 
 }

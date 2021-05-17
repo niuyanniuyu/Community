@@ -28,4 +28,8 @@ public interface MessageMapper {
     // 消息已读未读状态更改
     int updateStatus(List<Integer> ids, int status);
 
+    // 用户删除私信的数量
+    int selectLetterDeletedCount(int userId, String conversationId);
+
+
 }
