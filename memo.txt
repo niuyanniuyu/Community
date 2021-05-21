@@ -129,3 +129,61 @@
 -查询某个用户关注的人，支持分页。
 -查询某个用户的粉丝，支持分页。
 
+优化登录模块
+●使用Redis存储验证码
+-验证码需要频繁的访问与刷新，对性能要求较高。
+-验证码不需永久保存，通常在很短的时间后就会失效。
+-分布式部署时，存在Session共享的问题。
+●使用Redis存储登录凭证
+-处理每次请求时，都要查询用户的登录凭证，访问的频率非常高。
+●使用Redis缓存用户信息
+-处理每次请求时，都要根据凭证查询用户信息,访问的频率非常高。
+-login_ticket表可以失效了
+
+Kafka阻塞队列
+●BlockingQueue
+-解决线程通信的问题。
+-阻塞方法: put、 take。
+●生产者消费者模式
+-生产者:产生数据的线程。
+-消费者:使用数据的线程。
+●实现类
+- ArrayBlockingQueue
+- LinkedBlockingQueue
+- PriorityBlockingQueue、 SynchronousQueue、 DelayQueue等。
+
+●Kafka简介
+-Kafka是一个分布式的流媒体平台。
+-应用:消息系统、日志收集、用户行为追踪、流式处理。
+●Kafka特点
+-高吞吐量、消息持久化、高可靠性、高扩展性。
+●Kafka术语
+-Broker、Zookeeper
+-Topic、Partition、 Offset
+-Leader Replica、Follower Replica
+●Kafka开启服务
+-bin\windows\zookeeper-server-start.bat config\zookeeper.properties
+-bin\windows\kafka-server-start.bat config\server.properties
+
+Spring整合Kafka
+●引入依赖
+- spring-kafka
+●配置Kafka
+-配置server、consumer
+●访问Kafka
+-生产者
+    kafkaTemplate.send(topic, data) ;
+-消费者
+    @KafkaListener (topics = {"test"})
+    public void handl eMessage (Consume rRecord record) { }
+
+
+发送系统通知
+●触发事件
+-评论后,发布通知
+-点赞后，发布通知
+-关注后，发布通知
+●处理事件
+-封装事件对象
+-开发事件的生产者
+-开发事件的消费者

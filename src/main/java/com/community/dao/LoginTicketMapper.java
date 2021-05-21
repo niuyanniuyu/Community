@@ -6,9 +6,13 @@ import org.apache.ibatis.annotations.*;
 /**
  * 在dao层直接使用注解开发
  * 不使用mapper.xml文件开发
+ * <p>
+ * 使用Redis存储登录凭证，暂不推荐使用此Mapper
+ * </p>
  */
 
 @Mapper
+@Deprecated
 public interface LoginTicketMapper {
 
     // 插入登录数据

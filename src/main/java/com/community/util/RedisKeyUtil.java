@@ -8,6 +8,12 @@ public class RedisKeyUtil {
     private static final String PREFIX_FOLLOWEE = "followee";
     // 粉丝
     private static final String PREFIX_FOLLOWER = "follower";
+    // 验证码
+    private static final String PREFIX_KAPTCHA = "kaptcha";
+    // 登录凭证
+    private static final String PREFIX_TICKET = "ticket";
+    // 用户名
+    private static final String PREFIX_USER = "user";
 
 
     // 生成某个实体的赞
@@ -38,4 +44,18 @@ public class RedisKeyUtil {
 
     }
 
+    // 登录验证码
+    public static String getKaptchaKey(String owner) {
+        return PREFIX_KAPTCHA + SPILT + owner;
+    }
+
+    // 登录凭证
+    public static String getTicketKey(String ticket) {
+        return PREFIX_TICKET + SPILT + ticket;
+    }
+
+    // 用户
+    public static String getUserKey(int userId) {
+        return PREFIX_USER + SPILT + userId;
+    }
 }
