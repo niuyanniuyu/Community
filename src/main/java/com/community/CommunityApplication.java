@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-//@EnableTransactionManagemen// 加入事务管理
+//@EnableTransactionManagemen //加入事务管理
 public class CommunityApplication {
 
     public static void main(String[] args) {
